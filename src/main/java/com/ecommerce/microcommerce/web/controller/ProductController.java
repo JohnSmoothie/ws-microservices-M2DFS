@@ -37,6 +37,21 @@ public class ProductController {
         return produitsFiltres;
     }
 
+    @GetMapping("/AdminProduits")
+    public String afficherVueAdmin() {
+        Iterable<Product> produits = productDao.findAll();
+        StringBuilder res = new StringBuilder("} <br>");
+
+        for (Product produit:
+             produits) {
+            res.append(produit.toString()).append(" : ").append(produit.calculerMargeProduit()).append(", <br>");
+        }
+
+        res.append("}");
+
+        return res.toString();
+    }
+
 
     //Récupérer un produit par son Id
     @GetMapping("getProduitId/{id}")
