@@ -2,6 +2,7 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -72,18 +73,22 @@ public class ProductController {
     @PostMapping(value = "/Produits")
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
-        Product productAdded =  productDao.save(product);
+        if (product.getPrix() == 0) {
+            throw new ProduitGratuitException("Le prix du nouveau produit est gratuit");
+        } else {
+            Product productAdded =  productDao.save(product);
 
-        if (productAdded == null)
-            return ResponseEntity.noContent().build();
+            if (productAdded == null)
+                return ResponseEntity.noContent().build();
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(productAdded.getId())
-                .toUri();
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(productAdded.getId())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        }
     }
 
     @RequestMapping(value = "/suprimerProduit/{id}", method = RequestMethod.DELETE)
@@ -94,7 +99,11 @@ public class ProductController {
 
     @RequestMapping(value = "/updateProduit", method = RequestMethod.PUT)
     public void updateProduit(@RequestBody Product product) {
-        productDao.save(product);
+        if (product.getPrix() == 0) {
+            throw new ProduitGratuitException("Le nouveau prix du produit est gratuit");
+        } else {
+            productDao.save(product);
+        }
     }
 
 
