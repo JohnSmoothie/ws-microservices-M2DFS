@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 
-
+@RestController
 public class ProductController {
 
     @Autowired
@@ -39,8 +39,10 @@ public class ProductController {
 
 
     //Récupérer un produit par son Id
-    public Product afficherUnProduit() {
-        return null;
+    @GetMapping("getProduitId/{id}")
+    public Product afficherUnProduit(@PathVariable(value = "id") int id) {
+
+        return productDao.findById(id);
     }
 
 
@@ -64,12 +66,15 @@ public class ProductController {
         return ResponseEntity.created(location).build();
     }
 
-    // supprimer un produit
-    public void supprimerProduit() {
+    @RequestMapping(value = "/suprimerProduit/{id}", method = RequestMethod.DELETE)
+    public void supprimerProduit(@PathVariable(value = "id") int id) {
+        productDao.delete(id);
     }
 
-    // Mettre à jour un produit
+
+    @RequestMapping(value = "/updateProduit", method = RequestMethod.PUT)
     public void updateProduit(@RequestBody Product product) {
+        productDao.save(product);
     }
 
 
