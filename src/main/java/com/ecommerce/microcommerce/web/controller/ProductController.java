@@ -52,6 +52,11 @@ public class ProductController {
         return res.toString();
     }
 
+    @GetMapping("/ProduitsTrie")
+    public List<Product> trierProduitsParOrdreAlphabetique() {
+        return productDao.findAllByOrderByNomAsc();
+    }
+
 
     //Récupérer un produit par son Id
     @GetMapping("getProduitId/{id}")
